@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/repo/stream_repo.dart';
 import '../model/response/body/host_info.dart';
 import '../model/response/body/join_info.dart';
+import '../model/response/peer_model.dart';
 import 'meeting_controller.dart';
 
 class StreamingController extends GetxController implements GetxService {
@@ -65,6 +66,31 @@ class StreamingController extends GetxController implements GetxService {
       _callTimerDuration = 0;
       _callTimer!.cancel();
     }
+  }
+
+  List<PeerModel> _peerList = [];
+  List<PeerModel> get peerList => _peerList;
+
+  addPeer(String id,String name, String avatar, int level, int age,int streamerType, int userId, int genderType) {
+
+    /// TODO need to dynamic gender type
+    String streamerRole = "";
+    switch(streamerType){
+      case 1:
+        streamerRole = "Host";
+        break;
+      case 2:
+        streamerRole = "Co-Host";
+        break;
+      case 3:
+        streamerRole = "Viewer";
+        break;
+      default:
+        streamerRole = "";
+        break;
+    }
+    peerList.add(PeerModel(id: id, name: name, image: avatar, level: level, age: age,genderType: genderType,streamerRole: streamerRole, userId: userId));
+    update();
   }
 
   int pkBattleResultCalculator(int hostPoint, int coHostPoint){
