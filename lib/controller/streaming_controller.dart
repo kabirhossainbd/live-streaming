@@ -3,14 +3,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:keep_screen_on/keep_screen_on.dart';
 import 'package:live_streaming/controller/auth_controller.dart';
+import 'package:live_streaming/controller/pk_controller.dart';
 import 'package:live_streaming/model/response/body/response_model.dart';
 import 'package:live_streaming/model/response/body/room_body.dart';
 import 'package:live_streaming/model/response/room_model.dart';
+import 'package:live_streaming/src/presentation/view/pages/create_steaming/view_streaming_screen.dart';
 import 'package:live_streaming/src/utils/constants/m_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -687,11 +690,15 @@ class StreamingController extends GetxController implements GetxService {
     saveImages.setString('imagepath', path);
   }
 
-  CreateRoomModel? _createRoomModel;
-  CreateRoomModel? get createRoomModel => _createRoomModel;
+  List<Members> _roomMemberList = [];
+  List<Members> get roomMemberList  => _roomMemberList;
 
   Hostinfo? _hostinfo;
   Hostinfo? get hostinfo => _hostinfo;
+
+
+  CreateRoomModel? _createRoomModel;
+  CreateRoomModel? get createRoomModel => _createRoomModel;
 
 
   Future<ResponseModel> createRoomBody(LiveRoomBody liveRoomBody, String token) async {
@@ -705,17 +712,18 @@ class StreamingController extends GetxController implements GetxService {
       _hostinfo = _createRoomModel!.datalist!.hostinfo;
       responseModel = ResponseModel(true, 'Room Create successfully');
     } else {
-      debugPrint('object-------__OUT${json.decode( await response.stream.bytesToString())}');
+      //debugPrint('object-------__OUT${json.decode( await response.stream.bytesToString())}');
 
       // debugPrint('object-------__${await response.stream.bytesToString()}');
        //debugPrint('object-------__${json.decode( await response.stream.bytesToString())}');
       responseModel = ResponseModel(false, '${response.reasonPhrase}');
-      debugPrint('${response.statusCode} ${response.reasonPhrase}');
+      debugPrint('error message--------->>>${response.statusCode} ${response.reasonPhrase}');
     }
     hideLoading();
     update();
     return responseModel;
   }
+  final _pkController = Get.find<PKController>();
 
 
   Future<bool> handleSoloJoin(bool isHost, bool isViewer, bool isSingle, int parentId,int hostId, String seatType, {bool fromInvite = false, bool isVIP = false}) async {
@@ -726,26 +734,26 @@ class StreamingController extends GetxController implements GetxService {
     setParentId(parentId);
     prefs.setString('server', _server);
     prefs.setString('room', _sid);
-   // _pkController.connect(isHost, isViewer, isSingle, false, seatType);
+    _pkController.connect(isHost, isViewer, isSingle, false, seatType);
     //Get.find<ChatController>().clearChat();
     setInitCount();
    // Get.find<ChatController>().setInitReplyCount();
-    //_pkController.setMicOff(false);
+    _pkController.setMicOff(false);
     _microphoneOn = false;
     removeAudio();
     // setNineSeat(isNine);
     setLive(false);
-    //_pkController.setViewCount(0);
-    // if(!isHost){
-    //   Get.find<PKController>().setDefaultMsg(Strings.warningMsg, _sid, true);
-    //   Get.find<PKController>().setDefaultMsg(Strings.welcomeMsg, _sid, true);
-    // }else{
-    //   setAuctionDone(false);
-    //   Get.find<PKController>().setDefaultMsg(Strings.warningMsg, _sid, true);
-    // }
-    //_pkController.setRoomTitle( isHost ? Get.find<AuthController>().getUserName() : _hostinfo != null ? _hostinfo!.userName ?? '' : '', true);
+    _pkController.setViewCount(0);
+    if(!isHost){
+      Get.find<PKController>().setDefaultMsg('Strings.warningMsg', _sid, true);
+      Get.find<PKController>().setDefaultMsg('Strings.welcomeMsg', _sid, true);
+    }else{
+      //setAuctionDone(false);
+      Get.find<PKController>().setDefaultMsg('Strings.warningMsg', _sid, true);
+    }
+    _pkController.setRoomTitle( isHost ? Get.find<AuthController>().getName() : _hostinfo != null ? _hostinfo!.userName ?? '' : '', true);
    // clearLastViewer();
-    // clearStreamingFire();
+   //  clearStreamingFire();
    // clearNewFan();
     clearGivers();
     /// for PK value
@@ -758,10 +766,10 @@ class StreamingController extends GetxController implements GetxService {
 
     setCameraToggle(true);
     setMic(true);
-    // Navigator.push(Get.context!, CupertinoPageRoute(builder: (_) =>
-    //     SoloLiveStreamingScreen(roomId: int.parse(_sid), parentId: parentId,hostId: hostId, isSingle: isSingle, isViewer: isViewer, isVIP : isVIP
-    //       // floating: floating
-    //     )));
+    Navigator.push(Get.context!, CupertinoPageRoute(builder: (_) =>
+        SoloLiveStreamingScreen(roomId: int.parse(_sid), parentId: parentId,hostId: hostId, isSingle: isSingle, isViewer: isViewer, isVIP : isVIP
+          // floating: floating
+        )));
     setJoin(false, true);
     setOthersHost(false);
     KeepScreenOn.turnOn(true).then((value) => debugPrint('Keep Screen On'));
@@ -769,6 +777,24 @@ class StreamingController extends GetxController implements GetxService {
   }
 
 
+
+  Future<ResponseModel> joinLiveRoom(int roomId) async {
+    Response response = await streamRepo.joinLiveRoom(roomId);
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      _roomMemberList = [];
+      _createRoomModel = CreateRoomModel.fromJson(response.body);
+      _roomMemberList.addAll(_createRoomModel!.datalist!.members ?? []);
+      _hostinfo = _createRoomModel!.datalist!.hostinfo;
+      responseModel = ResponseModel(true, 'Erfolgreich gespeichert');
+    } else if(response.statusCode == 404){
+      responseModel = ResponseModel(false, response.statusCode.toString());
+    }else {
+      responseModel = ResponseModel(false, '${response.statusText}');
+    }
+    update();
+    return responseModel;
+  }
 
 }
 

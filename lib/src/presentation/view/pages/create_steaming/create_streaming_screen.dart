@@ -531,11 +531,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                                           }else if(value.isGranted){
                                                             stream.createRoomBody(LiveRoomBody(title: _chatTitle.text, seatType: '1', status: stream.privacyName, tags: stream.tagId), Get.find<AuthController>().getUserToken()).then((value){
                                                               if(value.isSuccess!){
-                                                                //stream.setSid(stream.hostinfo!.id.toString());
+                                                                stream.setSid(stream.hostinfo!.id.toString());
                                                                 bool isHost = true;
                                                                 bool isViewer = false;
                                                                 bool isSingle = true;
-                                                                stream.handleSoloJoin(isHost, isViewer, isSingle, 0, 0, '1');
+                                                                stream.handleSoloJoin(isHost, isViewer, isSingle, stream.hostinfo!.prentId ?? 0, 0, '1');
                                                                 // stream.handleJoin(true, false, true, false,false, false, false, false);
                                                                 //meeting.setHost(true);
                                                                 meeting.setVideo(true);
@@ -548,11 +548,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                                           tags: stream.tagId,
                                                         ), Get.find<AuthController>().getUserToken()).then((value){
                                                           if(value.isSuccess!){
-                                                            //stream.setSid(stream.hostinfo!.id.toString());
+                                                            stream.setSid(stream.hostinfo!.id.toString());
                                                             bool isHost = true;
                                                             bool isViewer = false;
                                                             bool isSingle = true;
-                                                            stream.handleSoloJoin(isHost, isViewer, isSingle,0,0, '1');
+                                                            stream.handleSoloJoin(isHost, isViewer, isSingle,stream.hostinfo!.prentId ?? 0,0, '1');
                                                             // stream.handleJoin(true, false, true, false,false, false, false, false);
                                                             //meeting.setHost(true);
                                                             meeting.setVideo(true);

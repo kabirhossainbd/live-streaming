@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_streaming/src/utils/constants/m_colors.dart';
 import 'package:live_streaming/src/utils/constants/m_dimensions.dart';
+import 'package:live_streaming/src/utils/constants/m_images.dart';
 import 'package:live_streaming/src/utils/constants/m_styles.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -250,4 +251,39 @@ class DialogHelper {
  static void hideLoading() {
   if (Get.isDialogOpen!) Get.back();
  }
+}
+
+
+
+class ProfileAvatar extends StatelessWidget {
+ final String? imageUrl, name;
+ final double height;
+ final double weight;
+ final bool isColor, isLatter;
+ const ProfileAvatar({Key? key, required this.imageUrl, this.name, this.height = 32, this.weight = 32, this.isColor = false, this.isLatter = false}) : super(key: key);
+
+ @override
+ Widget build(BuildContext context) {
+  return Container(
+   height: height,
+   width: weight,
+   decoration: BoxDecoration(
+       shape: BoxShape.circle,
+       color: isColor ? MyColor.colorBlack.withOpacity(0.1) : null
+   ),
+   child: ClipOval(
+     child: Image.asset(MyImage.defaultLogo,
+      height: 80,
+      width: 80,
+      fit: BoxFit.cover,
+     ),
+   )
+  );
+ }
+}
+
+
+Future<PermissionStatus> checkCameraPermission() async {
+ final status = await Permission.camera.status;
+ return status;
 }

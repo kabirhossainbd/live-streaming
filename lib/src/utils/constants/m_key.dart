@@ -10,6 +10,7 @@ class MyKey {
   static const String loginUri = '/login';
   static const String createRoomUri = '/live-room-create';
   static const String getRoomUri = '/live-room';
+  static const String joinLiveRoomUri = '/live-room-join';
 
 
   static const String getProfileImage = '/live-room';

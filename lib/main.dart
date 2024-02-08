@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +29,7 @@ Future<void> main() async {
       overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   await Future.delayed(const Duration(milliseconds: 300));
 
-
+ // FirebaseMessaging.instance.requestPermission();
 
   await di.init();
   Map<String, Map<String, String>> localString = await di.init();

@@ -115,6 +115,8 @@ dependencies:
   lottie: ^3.0.0
   carousel_slider: ^4.2.1
   keep_screen_on: ^2.0.0
+  flutter_foreground_task: ^6.1.2
+  fading_edge_scrollview: ^3.0.0
 
   #page transition
   page_transition: ^2.1.0

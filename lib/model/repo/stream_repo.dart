@@ -21,12 +21,12 @@ class StreamRepo extends GetxController  implements GetxService{
     Map<String, String> fields = {};
     fields.addAll(<String, String>{
       'title': liveRoomBody.title ?? '',
-      'seat_type': liveRoomBody.seatType ?? '',
-      'status' : liveRoomBody.status ?? '',
+      'seat_type': '1',
+      'status' : 'Public',
       'server_id' : '0',
       'tags' : liveRoomBody.tags.toString().replaceAll('[', '').replaceAll(']', ''),
       'price' : '500',
-      'category_id' : liveRoomBody.categoryId.toString(),
+      'category_id' : '1',
     });
     request.fields.addAll(fields);
     debugPrint('---------->>>>> REPO $fields');
@@ -34,5 +34,9 @@ class StreamRepo extends GetxController  implements GetxService{
     return response;
   }
 
+
+  Future<Response> joinLiveRoom(int roomId) async {
+    return await apiClient.postData(MyKey.joinLiveRoomUri, {"room_id" : roomId});
+  }
 
 }

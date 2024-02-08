@@ -5,6 +5,7 @@ import 'package:live_streaming/controller/auth_controller.dart';
 import 'package:live_streaming/controller/home_controller.dart';
 import 'package:live_streaming/controller/language_controller.dart';
 import 'package:live_streaming/controller/localization_controller.dart';
+import 'package:live_streaming/controller/pk_controller.dart';
 import 'package:live_streaming/controller/splash_controller.dart';
 import 'package:live_streaming/controller/theme_controller.dart';
 import 'package:live_streaming/model/repo/auth_repo.dart';
@@ -48,6 +49,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => SignalRController(signalRepo: Get.find()));
   Get.lazyPut(() => IonController());
   Get.lazyPut(() => MeetingController());
+  Get.lazyPut(() => PKController(streamRepo: Get.find()));
   Get.lazyPut(() => StreamingController(streamRepo: Get.find()));
   Get.lazyPut(() => LanguageController(sharedPreferences: Get.find()));
 
