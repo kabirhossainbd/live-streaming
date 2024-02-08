@@ -10,6 +10,7 @@ class MyImage {
   static const String image3 = 'assets/images/image3.jpg';
   static const String image4 = 'assets/images/image4.jpg';
   static const String livePng = 'assets/icons/live.png';
+  static const String defaultLogo = 'assets/icons/logo.jpg';
 
   /// For SVG
   static const String logoSvg = 'assets/svg/LovoRise-Logo.svg';

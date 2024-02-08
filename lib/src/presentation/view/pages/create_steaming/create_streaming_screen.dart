@@ -387,6 +387,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                           const SizedBox(height: 5),
 
                                           Container(
+                                            height: 100,
                                             padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
                                             margin: const EdgeInsets.symmetric(horizontal: 20),
                                             decoration: BoxDecoration(
@@ -407,14 +408,19 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                                         onTap: streamCon.pickImage,
                                                         child: Stack(
                                                           children: [
-                                                            stream.file != null ? ClipRRect(
-                                                              borderRadius: BorderRadius.circular(5),
-                                                              child: Image.file(
-                                                                File(stream.file!.path), width: 60, height: 60, fit: BoxFit.cover,
-                                                              ),
-                                                            ) : ClipRRect(
-                                                              borderRadius: BorderRadius.circular(5),
-                                                              child: Image.asset(MyImage.image1)),
+                                                            if(stream.file != null)...[
+                                                              ClipRRect(
+                                                                borderRadius: BorderRadius.circular(5),
+                                                                child: Image.file(File(stream.file!.path), width: 60, height: 60, fit: BoxFit.cover),
+                                                              )
+                                                            ]else...[
+                                                              ClipRRect(borderRadius: BorderRadius.circular(5), child: Image.asset(MyImage.image1, height: 60, width: 60, fit: BoxFit.cover,)),
+
+                                                            ],
+
+
+
+
                                                             Positioned(
                                                               bottom: 0,
                                                               left: 0,
@@ -451,15 +457,15 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                                               cursorHeight: 18,
                                                               autofocus: false,
                                                               decoration: InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  focusedBorder: InputBorder.none,
-                                                                  enabledBorder: InputBorder.none,
-                                                                  errorBorder: InputBorder.none,
-                                                                  disabledBorder: InputBorder.none,
-                                                                  contentPadding: const EdgeInsets.only(bottom: 15),
-                                                                  hintStyle: robotoRegular.copyWith(color:  Colors.grey, fontSize: Dimensions.fontSizeDefault, height: 1.4),
-                                                                  labelStyle: robotoRegular.copyWith(color: MyColor.colorWhite, fontSize: Dimensions.fontSizeDefault),
-                                                                  hintText: 'add_a_title',
+                                                                border: InputBorder.none,
+                                                                focusedBorder: InputBorder.none,
+                                                                enabledBorder: InputBorder.none,
+                                                                errorBorder: InputBorder.none,
+                                                                disabledBorder: InputBorder.none,
+                                                                contentPadding: const EdgeInsets.only(bottom: 15),
+                                                                hintStyle: robotoRegular.copyWith(color:  Colors.grey, fontSize: Dimensions.fontSizeDefault, height: 1.4),
+                                                                labelStyle: robotoRegular.copyWith(color: MyColor.colorWhite, fontSize: Dimensions.fontSizeDefault),
+                                                                hintText: 'Add a title',
                                                               ),
                                                             ),
                                                           ),
@@ -467,7 +473,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
 
                                                           //const SizedBox(height: 5,),
                                                           InkWell(
-                                                           // onTap: () =>  Get.bottomSheet(const PrivacyBottomSheet()),
+                                                            // onTap: () =>  Get.bottomSheet(const PrivacyBottomSheet()),
                                                             child: Container(
                                                               padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
                                                               decoration: BoxDecoration(
@@ -493,7 +499,6 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
 
                                                 const SizedBox(height: 5),
                                                 Container(margin: const EdgeInsets.symmetric(horizontal: 8),color: MyColor.colorSecondary,height: 0.5, width: double.infinity,),
-                                               
                                               ],
                                             ),
                                           ),
@@ -574,7 +579,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> with WidgetsBindingObse
                                                           //  stops: [ 0.9, 0.6, 0.4, 0.2,],
                                                         ),
                                                       ),
-                                                      child: Text('go_live', style: robotoMedium.copyWith(color: MyColor.colorWhite, fontSize: Dimensions.fontSizeDefault), overflow: TextOverflow.ellipsis, maxLines: 1,),
+                                                      child: Text('Go Live', style: robotoMedium.copyWith(color: MyColor.colorWhite, fontSize: Dimensions.fontSizeDefault), overflow: TextOverflow.ellipsis, maxLines: 1,),
                                                     )
                                                 )),
 

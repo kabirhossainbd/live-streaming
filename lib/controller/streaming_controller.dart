@@ -11,6 +11,7 @@ import 'package:live_streaming/controller/auth_controller.dart';
 import 'package:live_streaming/model/response/body/response_model.dart';
 import 'package:live_streaming/model/response/body/room_body.dart';
 import 'package:live_streaming/model/response/room_model.dart';
+import 'package:live_streaming/src/utils/constants/m_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/repo/stream_repo.dart';
@@ -355,7 +356,7 @@ class StreamingController extends GetxController implements GetxService {
     update();
   }
 
-  String _privacyName = '';
+  String _privacyName = '1';
   String get privacyName => _privacyName;
   void  setPrivacyName(String value){
     _privacyName = value;
@@ -694,6 +695,8 @@ class StreamingController extends GetxController implements GetxService {
 
 
   Future<ResponseModel> createRoomBody(LiveRoomBody liveRoomBody, String token) async {
+    showLoading();
+    update();
     http.StreamedResponse response = await streamRepo.liveRoomBody(liveRoomBody, _file, token);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -702,12 +705,14 @@ class StreamingController extends GetxController implements GetxService {
       _hostinfo = _createRoomModel!.datalist!.hostinfo;
       responseModel = ResponseModel(true, 'Room Create successfully');
     } else {
+      debugPrint('object-------__OUT${json.decode( await response.stream.bytesToString())}');
+
       // debugPrint('object-------__${await response.stream.bytesToString()}');
-      // debugPrint('object-------__${json.decode( await response.stream.bytesToString())}');
+       //debugPrint('object-------__${json.decode( await response.stream.bytesToString())}');
       responseModel = ResponseModel(false, '${response.reasonPhrase}');
       debugPrint('${response.statusCode} ${response.reasonPhrase}');
     }
-    //hideLoading();
+    hideLoading();
     update();
     return responseModel;
   }

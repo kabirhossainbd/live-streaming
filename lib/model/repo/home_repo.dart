@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:live_streaming/model/response/story_model.dart';
 import 'package:live_streaming/src/data/datasource/remote/http_client.dart';
 import 'package:live_streaming/src/utils/constants/m_images.dart';
+import 'package:live_streaming/src/utils/constants/m_key.dart';
 
 
 class HomeRepo {
@@ -28,6 +29,11 @@ class HomeRepo {
     } catch (e) {
       return const Response(statusCode: 404, statusText: 'Video not found');
     }
+  }
+
+
+  Future<Response> getRoomList(String offset) async {
+    return await apiSource.getData('${MyKey.getRoomUri}?page=$offset');
   }
 
 }

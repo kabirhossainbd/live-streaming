@@ -9,7 +9,12 @@ class MyKey {
 
   static const String loginUri = '/login';
   static const String createRoomUri = '/live-room-create';
-  static const String getRoom = '/live-room-create';
+  static const String getRoomUri = '/live-room';
+
+
+  static const String getProfileImage = '/live-room';
+
+
 
 
   ///google map api key

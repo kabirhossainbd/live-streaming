@@ -25,7 +25,7 @@ class StreamRepo extends GetxController  implements GetxService{
       'status' : liveRoomBody.status ?? '',
       'server_id' : '0',
       'tags' : liveRoomBody.tags.toString().replaceAll('[', '').replaceAll(']', ''),
-      'price' : liveRoomBody.price.toString(),
+      'price' : '500',
       'category_id' : liveRoomBody.categoryId.toString(),
     });
     request.fields.addAll(fields);
