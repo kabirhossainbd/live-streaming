@@ -1,16 +1,15 @@
 class MyImage {
 
+  ///for lottie
+  static const String liveLottie = 'assets/lottie/live.json';
 
   ///for Image
-  static const String chatBg = 'assets/images/chatBg.png';
   static const String image0 = 'assets/images/image.png';
-  static const String image1 = 'assets/images/image2.jpg';
-  static const String image2 = 'assets/images/image4.png';
-  static const String image3 = 'assets/images/image1.png';
-  static const String image4 = 'assets/images/image3.jpg';
-  static const String image5 = 'assets/images/image5.png';
-  static const String friends = 'assets/images/friends.jpg';
-  static const String groupBg = 'assets/images/groupBg.jpg';
+  static const String image1 = 'assets/images/image1.png';
+  static const String image2 = 'assets/images/image2.jpg';
+  static const String image3 = 'assets/images/image3.jpg';
+  static const String image4 = 'assets/images/image4.jpg';
+  static const String livePng = 'assets/icons/live.png';
 
   /// For SVG
   static const String logoSvg = 'assets/svg/LovoRise-Logo.svg';

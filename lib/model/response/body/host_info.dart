@@ -27,7 +27,7 @@ class Hostinfo {
   String? countryName;
   int? totalCount;
   int? followingCheckCount;
-  Settings? settings;
+
 
   Hostinfo(
       {this.id,
@@ -56,7 +56,6 @@ class Hostinfo {
         this.countryName,
         this.totalCount,
         this.followingCheckCount,
-        this.settings,
       });
 
   Hostinfo.fromJson(Map<String, dynamic> json) {
@@ -86,9 +85,7 @@ class Hostinfo {
     countryName = json['country_name'];
     totalCount = json['total_participant_count'];
     followingCheckCount = json['followingcheck_count'];
-    settings = json['settings'] != null
-        ? Settings.fromJson(json['settings'])
-        : null;
+
   }
 
   Map<String, dynamic> toJson() {
@@ -119,9 +116,6 @@ class Hostinfo {
     data['country_name'] = countryName;
     data['total_participant_count'] = totalCount;
     data['followingcheck_count'] = followingCheckCount;
-    if (settings != null) {
-      data['settings'] = settings!.toJson();
-    }
     return data;
   }
 }

@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_streaming/src/utils/constants/m_colors.dart';
+import 'package:live_streaming/src/utils/constants/m_dimensions.dart';
 import 'package:live_streaming/src/utils/constants/m_styles.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -145,4 +146,108 @@ Future<bool> promptPermissionSetting() async {
   return true;
  }
  return false;
+}
+
+
+
+Future<void> permissionDialog() async{
+ Get.dialog( AlertDialog(
+  alignment: Alignment.center,
+  insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+  actionsAlignment: MainAxisAlignment.spaceBetween,
+  actions: [
+   Padding(
+       padding: const EdgeInsets.only(right: 24, bottom: 16),
+       child: Align(
+        alignment: Alignment.centerRight,
+        child: InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            onTap: (){
+             checkPer().then((value) {
+              if(value == 'denied'){
+               debugPrint('--------->>>>denied');
+              }else if(value == 'permanentlyDenied'){
+               Get.back();
+               openSettingsDialog(Get.context);
+              }else{
+               Get.back(result: 'done');
+              }
+             });
+            },
+            child: Text('confirm',
+             style: robotoMedium.copyWith(
+                 color: MyColor.getPrimaryColor(),
+                 fontSize:
+                 Dimensions.fontSizeDefault),
+             overflow: TextOverflow.ellipsis,
+             maxLines: 1,
+            )
+        ),
+       )
+   )
+  ],
+  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+  title: RichText(
+   text: TextSpan(
+       text: 'to_broadcast_live_vide',
+       style: robotoRegular.copyWith(
+           color: MyColor.colorBlack,
+           fontSize: Dimensions.fontSizeDefault),
+       children: [
+        TextSpan(text: 'KUAA', style: robotoBold.copyWith(
+            color: MyColor.colorBlack,
+            fontSize: Dimensions.fontSizeDefault)),
+
+        TextSpan(text: 'to_broadcast_live2',
+            style: robotoRegular.copyWith(
+                color: MyColor.colorBlack,
+                fontSize: Dimensions.fontSizeDefault)),
+       ]
+   ),
+  ),
+ ));
+}
+
+
+
+showLoading([String? message]) {
+ DialogHelper.showLoading(message ?? 'processing');
+}
+hideLoading() {
+ DialogHelper.hideLoading();
+}
+
+
+
+class DialogHelper {
+ //show error dialog
+
+ //show toast
+ //show snack bar
+ //show loading
+ static void showLoading([String? message]) {
+  Get.dialog(
+   Dialog(
+    child: Padding(
+     padding: const EdgeInsets.all(25.0),
+     child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+       const SizedBox(height: 30, width: 30,child: Center(child: CircularProgressIndicator(strokeWidth: 3,))),
+       const SizedBox(width: 15),
+       Text(message ?? 'Loading...'),
+      ],
+     ),
+    ),
+   ),
+  );
+ }
+
+ //hide loading
+ static void hideLoading() {
+  if (Get.isDialogOpen!) Get.back();
+ }
 }

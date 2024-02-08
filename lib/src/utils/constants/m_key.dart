@@ -5,7 +5,11 @@ import 'package:live_streaming/model/response/language_model.dart';
 class MyKey {
 
   /// base url
-  static const String baseUrl = '';
+  static const String baseUrl = 'http://185.100.232.17:3021/api';
+
+  static const String loginUri = '/login';
+  static const String createRoomUri = '/live-room-create';
+  static const String getRoom = '/live-room-create';
 
 
   ///google map api key

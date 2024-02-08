@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:live_streaming/src/presentation/view/pages/create_steaming/create_streaming_screen.dart';
 import 'package:live_streaming/src/presentation/view/pages/home/home_screen.dart';
 import 'package:live_streaming/src/utils/constants/m_colors.dart';
+import 'package:page_transition/page_transition.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -27,7 +29,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
     _screens = [
-      const HomeScreen(),
       const HomeScreen(),
     ];
   }
@@ -54,45 +55,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: MyColor.getBackgroundColor(),
-        bottomNavigationBar: SafeArea(
-          child: Container(
-            height: 55,
-            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 7),
-            padding: const EdgeInsets.fromLTRB(12,8,12,8),
-            decoration: BoxDecoration(
-                color: MyColor.getBackgroundColor().withOpacity(0.9),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: MyColor.getGreyColor().withOpacity(0.3),
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                      offset: const Offset(2,2)
-                  )
-                ]
-            ),
-            child: Row(mainAxisSize: MainAxisSize.min,crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                BottomNavItem(image: CupertinoIcons.home,  title: 'home'.tr, isSelected: _pageIndex == 0, color: _pageIndex == 0 ? MyColor.colorPrimary : MyColor.getGreyColor(),  onTap: () {
-                  _setPage(0);
-                },),
-                BottomNavItem(image: CupertinoIcons.calendar_today,  title: 'chat'.tr, isSelected: _pageIndex == 1, color: _pageIndex == 1 ? MyColor.colorPrimary : MyColor.getGreyColor(),  onTap: () {
-                  _setPage(1);
-
-                },),
-
-                addTaskCreate(onTap: ()=> _setPage(2)),
-
-                BottomNavItem(image: CupertinoIcons.chat_bubble, title: 'image'.tr, isSelected: _pageIndex == 3, color: _pageIndex == 3 ? MyColor.colorPrimary : MyColor.getGreyColor(), onTap: () {
-                  _setPage(3);
-                },
-                ),
-                BottomNavItem(image: CupertinoIcons.profile_circled,  title: 'menu'.tr, isSelected: _pageIndex == 4, color: _pageIndex == 4 ? MyColor.colorPrimary : MyColor.getGreyColor(), onTap: () {
-                  _setPage(4);
-                }),
-              ],
-            ),
-          ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(onPressed: (){
+            Navigator.push(context, PageTransition(child: const AddVideoScreen(), type: PageTransitionType.bottomToTop));
+          }, backgroundColor: MyColor.getPrimaryColor(),child: const Icon(Icons.add, size: 30, color: Colors.white,),),
         ),
         body: PageView.builder(
           controller: _pageController,
@@ -117,14 +84,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 56,
-        width: 56,
+        width: 200,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         alignment: Alignment.center,
         decoration:  const BoxDecoration(
             color: Color(0xFFA39AFF),
             shape: BoxShape.circle
         ),
-        child: const Icon(CupertinoIcons.add),
+        child: const Text("Create Live"),
       ),
     );
   }

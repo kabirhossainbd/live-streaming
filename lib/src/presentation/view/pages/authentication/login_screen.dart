@@ -5,12 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:live_streaming/controller/auth_controller.dart';
 import 'package:live_streaming/src/presentation/view/component/m_button.dart';
+import 'package:live_streaming/src/presentation/view/component/m_toast.dart';
 import 'package:live_streaming/src/presentation/view/pages/dashboard/start_screen.dart';
 import 'package:live_streaming/src/presentation/view/pages/home/home_screen.dart';
 import 'package:live_streaming/src/utils/constants/m_colors.dart';
 import 'package:live_streaming/src/utils/constants/m_dimensions.dart';
 import 'package:live_streaming/src/utils/constants/m_images.dart';
 import 'package:live_streaming/src/utils/constants/m_styles.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -87,13 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
 
-                            SvgPicture.asset(MyImage.loveLogo, height: 48,width: 48,),
+                            // Load a Lottie file from your assets
+                            Lottie.asset(MyImage.liveLottie),
                              const SizedBox(height: Dimensions.paddingSizeSmall,),
                             Row( crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text('Sign in to', style: robotoExtraBold.copyWith(color: MyColor.getHeaderTextColor(), fontWeight: FontWeight.w800,fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center,),
                                 const SizedBox(width: 4),
-                                Text('LovoRise', style: robotoExtraBold.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w800,fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center,),
+                                Text('KUAA', style: robotoExtraBold.copyWith(color: MyColor.getPrimaryColor(), fontWeight: FontWeight.w800,fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center,),
                               ],
                             ),
 
@@ -178,16 +181,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Colors.red,
                                   ),
                                 ),
-                                labelText: 'Email',
+                                labelText: 'Name',
                                 labelStyle: robotoRegular.copyWith(color:  _isUserNameEmailError ? MyColor.colorRed : _emailFocus.hasFocus ?  MyColor.getPrimaryColor() : MyColor.getGreyColor(), fontSize: Dimensions.fontSizeSmall),
                                 hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: MyColor.getGreyColor()),
-                                hintText: "Email",
+                                hintText: "Name",
                               ),
                             ),
 
                             const SizedBox(height: 6,),
                             if(_isUserNameEmailError)...[
-                              Align(alignment: Alignment.centerLeft,child: Text('enter_email'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: MyColor.colorRed),overflow: TextOverflow.ellipsis, maxLines: 2,)),
+                              Align(alignment: Alignment.centerLeft,child: Text('Enter name'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: MyColor.colorRed),overflow: TextOverflow.ellipsis, maxLines: 2,)),
                             ],
 
                             const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -203,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     FilteringTextInputFormatter.deny(RegExp(r"\s\s")),
                                     FilteringTextInputFormatter.deny(RegExp(r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])')),
                                   ],
-                                  keyboardType: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.done,
                                   onChanged: (text){
                                     setState(() {
@@ -270,10 +273,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: Colors.red,
                                       ),
                                     ),
-                                      labelText: 'Password',
+                                      labelText: 'Student ID',
                                       labelStyle: robotoRegular.copyWith(color:  (_isPasswordError || _isPasswordLengthError) ? MyColor.colorRed : _passwordFocus.hasFocus ? MyColor.getPrimaryColor() : MyColor.getGreyColor(), fontSize: Dimensions.fontSizeSmall),
                                       hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: MyColor.getGreyColor()),
-                                      hintText: "Enter password",
+                                      hintText: "Student IDd",
                                   ),
                                 ),
                                 InkWell(
@@ -293,10 +296,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             const SizedBox(height: 6,),
                            if(_isPasswordError)...[ 
-                             Align(alignment: Alignment.centerLeft,child: Text('enter_password'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: MyColor.colorRed),overflow: TextOverflow.ellipsis, maxLines: 2,)),
-                           ]else if(_isPasswordLengthError)...[
-                              Align(alignment: Alignment.centerLeft,child: Text('password_should_be'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: MyColor.colorRed),overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.start,)),
-                            ],
+                             Align(alignment: Alignment.centerLeft,child: Text('Enter Student ID'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: MyColor.colorRed),overflow: TextOverflow.ellipsis, maxLines: 2,)),
+                           ],
 
                             SizedBox(
                               height: 26,
@@ -317,8 +318,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 16),
 
                             CustomButton(
-                                onTap:  () async {
-                                  Get.to(DashboardScreen());
+                                onTap:  (_emailController.text.isEmpty && _passwordController.text.isEmpty) ? null : () async {
+                                  auth.login(_passwordController.text, _emailController.text).then((value){
+                                    if(value.isSuccess!){
+                                      Navigator.pushAndRemoveUntil(context, PageTransition(child: const DashboardScreen(), type: PageTransitionType.bottomToTop), (route) => false);
+                                    }else{
+                                      showCustomToast(value.message ?? '');
+                                    }
+                                  });
                                 },
                                 buttonText: 'Sign in',isColor: (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty)),
 

@@ -1,15 +1,23 @@
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:keep_screen_on/keep_screen_on.dart';
+import 'package:live_streaming/controller/auth_controller.dart';
+import 'package:live_streaming/model/response/body/response_model.dart';
+import 'package:live_streaming/model/response/body/room_body.dart';
+import 'package:live_streaming/model/response/room_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/repo/stream_repo.dart';
 import '../model/response/body/host_info.dart';
 import '../model/response/body/join_info.dart';
 import 'meeting_controller.dart';
+import 'package:http/http.dart' as http;
 
 class StreamingController extends GetxController implements GetxService {
   final StreamRepo streamRepo;
@@ -627,6 +635,109 @@ class StreamingController extends GetxController implements GetxService {
   setParentId(int id){
     _parentId = id;
   }
+
+
+  File? _file;
+  File? get file => _file;
+
+  String? _imagePath;
+  String? get imagePath => _imagePath;
+
+  void pickImage() async{
+    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    _file = File.fromUri(Uri.parse(image!.path));
+    //_file = _file;
+    saveImage(_file!.path);
+    update();
+  }
+
+  void setImagePath(String imagePath) {
+    _file = File(imagePath);
+    update();
+  }
+  void saveImage(String path) async{
+    SharedPreferences saveImages = await SharedPreferences.getInstance();
+    saveImages.setString('imagepath', path);
+  }
+
+  CreateRoomModel? _createRoomModel;
+  CreateRoomModel? get createRoomModel => _createRoomModel;
+
+  Hostinfo? _hostinfo;
+  Hostinfo? get hostinfo => _hostinfo;
+
+
+  Future<ResponseModel> createRoomBody(LiveRoomBody liveRoomBody, String token) async {
+    http.StreamedResponse response = await streamRepo.liveRoomBody(liveRoomBody, _file, token);
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      final body = json.decode( await response.stream.bytesToString());
+      _createRoomModel = CreateRoomModel.fromJson(body);
+      _hostinfo = _createRoomModel!.datalist!.hostinfo;
+      responseModel = ResponseModel(true, 'Room Create successfully');
+    } else {
+      // debugPrint('object-------__${await response.stream.bytesToString()}');
+      // debugPrint('object-------__${json.decode( await response.stream.bytesToString())}');
+      responseModel = ResponseModel(false, '${response.reasonPhrase}');
+      debugPrint('${response.statusCode} ${response.reasonPhrase}');
+    }
+    //hideLoading();
+    update();
+    return responseModel;
+  }
+
+
+  Future<bool> handleSoloJoin(bool isHost, bool isViewer, bool isSingle, int parentId,int hostId, String seatType, {bool fromInvite = false, bool isVIP = false}) async {
+    if (_server.isEmpty || _sid.isEmpty) {
+      return false;
+    }
+    setHost(isHost);
+    setParentId(parentId);
+    prefs.setString('server', _server);
+    prefs.setString('room', _sid);
+   // _pkController.connect(isHost, isViewer, isSingle, false, seatType);
+    //Get.find<ChatController>().clearChat();
+    setInitCount();
+   // Get.find<ChatController>().setInitReplyCount();
+    //_pkController.setMicOff(false);
+    _microphoneOn = false;
+    removeAudio();
+    // setNineSeat(isNine);
+    setLive(false);
+    //_pkController.setViewCount(0);
+    // if(!isHost){
+    //   Get.find<PKController>().setDefaultMsg(Strings.warningMsg, _sid, true);
+    //   Get.find<PKController>().setDefaultMsg(Strings.welcomeMsg, _sid, true);
+    // }else{
+    //   setAuctionDone(false);
+    //   Get.find<PKController>().setDefaultMsg(Strings.warningMsg, _sid, true);
+    // }
+    //_pkController.setRoomTitle( isHost ? Get.find<AuthController>().getUserName() : _hostinfo != null ? _hostinfo!.userName ?? '' : '', true);
+   // clearLastViewer();
+    // clearStreamingFire();
+   // clearNewFan();
+    clearGivers();
+    /// for PK value
+
+    if(isHost && seatType == '16'){
+      hostinfo!.seatType = '16';
+      hostinfo!.userId = Get.find<AuthController>().getUserId();
+    }
+    setStreaming(true, false);
+
+    setCameraToggle(true);
+    setMic(true);
+    // Navigator.push(Get.context!, CupertinoPageRoute(builder: (_) =>
+    //     SoloLiveStreamingScreen(roomId: int.parse(_sid), parentId: parentId,hostId: hostId, isSingle: isSingle, isViewer: isViewer, isVIP : isVIP
+    //       // floating: floating
+    //     )));
+    setJoin(false, true);
+    setOthersHost(false);
+    KeepScreenOn.turnOn(true).then((value) => debugPrint('Keep Screen On'));
+    return true;
+  }
+
+
 
 }
 

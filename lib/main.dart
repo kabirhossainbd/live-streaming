@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               translations: LocaleString(localString: widget.localString),
               fallbackLocale: const Locale('en', 'US'),
               title: MyStrings.appName,
-              initialRoute:  MyRouteHelper.loginScreen,
+              initialRoute: Get.find<AuthController>().isLoggedIn() ? MyRouteHelper.dashboard : MyRouteHelper.loginScreen,
               defaultTransition: Transition.topLevel,
               transitionDuration: const Duration(milliseconds: 500),
               getPages: MyRouteHelper.routes,
