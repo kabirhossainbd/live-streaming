@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:live_streaming/controller/auth_controller.dart';
 import 'package:live_streaming/src/presentation/view/component/m_button.dart';
+import 'package:live_streaming/src/presentation/view/pages/dashboard/start_screen.dart';
 import 'package:live_streaming/src/presentation/view/pages/home/home_screen.dart';
 import 'package:live_streaming/src/utils/constants/m_colors.dart';
 import 'package:live_streaming/src/utils/constants/m_dimensions.dart';
@@ -316,19 +317,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 16),
 
                             CustomButton(
-                                onTap: (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) ? () async{
-
-                                  String email = _emailController.text.trim();
-                                  String password = _passwordController.text.trim();
-                                  if (password.length < 6) {
-                                    setState(() {
-                                      _isPasswordLengthError = true;
-                                    });
-                                  } else {
-                                    Get.to(HomeScreen());
-                                  }
-                                } : null,
-
+                                onTap:  () async {
+                                  Get.to(DashboardScreen());
+                                },
                                 buttonText: 'Sign in',isColor: (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty)),
 
                             SizedBox(height: Dimensions.fontSizeOverLarge),
